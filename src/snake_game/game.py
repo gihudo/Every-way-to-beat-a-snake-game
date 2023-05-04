@@ -15,6 +15,7 @@ class Game:
         
         self.running = True
         self.score = 2
+        self.n_games = 0
         self.max_score = (field[0] - 1) * (field[1] - 1)
 
         pygame.init()
@@ -70,7 +71,7 @@ class Game:
     def reset(self):
         self.running = True
         self.score = 2
-
+        self.n_games += 1
         self.snake.length = 2
         self.snake.positions = [(0, 0)] * 2
 
@@ -91,6 +92,11 @@ class Game:
                         self.snake.change_direction_up()
                     elif event.key == K_DOWN:
                         self.snake.change_direction_down()
+                    elif event.key == K_1:
+                        self.difficulty -= 10
+                    elif event.key == K_2:
+                        self.difficulty += 10
+
 
     def __update_screen(self):
         self.surface.fill(self.bg_color)

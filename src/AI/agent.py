@@ -11,7 +11,7 @@ import random
 import time
 
 MAX_MEMORY = 100_000
-BATCH_SIZE= 1000
+BATCH_SIZE = 1000
 LR = 0.001
 
 class Agent:
@@ -43,21 +43,25 @@ class Agent:
         dir_d = game.snake.Directions.DOWN == game.snake.direction
 
         state = [
+            #forward
             (dir_r and game.snake.is_body_collision(point_r)) or
             (dir_l and game.snake.is_body_collision(point_l)) or
             (dir_u and game.snake.is_body_collision(point_u)) or
             (dir_d and game.snake.is_body_collision(point_d)),
 
+            #right
             (dir_u and game.snake.is_body_collision(point_r)) or
             (dir_d and game.snake.is_body_collision(point_l)) or
             (dir_r and game.snake.is_body_collision(point_d)) or
             (dir_l and game.snake.is_body_collision(point_u)),
 
+            #left
             (dir_u and game.snake.is_body_collision(point_l)) or
             (dir_d and game.snake.is_body_collision(point_r)) or
             (dir_r and game.snake.is_body_collision(point_u)) or
             (dir_l and game.snake.is_body_collision(point_d)),
 
+            #down
             (dir_u and game.snake.is_body_collision(point_l)) or
             (dir_d and game.snake.is_body_collision(point_r)) or
             (dir_r and game.snake.is_body_collision(point_u)) or
@@ -80,6 +84,8 @@ class Agent:
         self.memory.append((state, action, reward, next_state, done))
 
     def train_long_memory(self):
+        self.n_games += 1
+
         if len(self.memory) > BATCH_SIZE:
             mini_sample = random.sample(self.memory, BATCH_SIZE)
         else:
@@ -97,7 +103,7 @@ class Agent:
         #random moves: tradeoff exploration / exploitation
         self.epsilon = 80 - self.n_games
         final_move = [0, 0, 0, 0]
-
+        print(self.n_games)
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 3)
             final_move[move] = 1
@@ -117,18 +123,16 @@ class Agent:
 
         while True:
             state_old = agent.get_state(g)
-            print(state_old)
-            
             final_move = agent.get_action(state_old)
             
-            #if final_move == [1,0,0,0]:
-            #    g.snake.change_direction_up()
-            #elif final_move == [0,1,0,0]:
-            #    g.snake.change_direction_down()
-            #elif final_move == [0,0,1,0]:
-            #    g.snake.change_direction_right()
-            #elif final_move == [0,0,0,1]:
-            #    g.snake.change_direction_left()
+            if final_move == [1,0,0,0]:
+                g.snake.change_direction_up()
+            elif final_move == [0,1,0,0]:
+                g.snake.change_direction_down()
+            elif final_move == [0,0,1,0]:
+                g.snake.change_direction_right()
+            elif final_move == [0,0,0,1]:
+                g.snake.change_direction_left()
 
             g.next()
 

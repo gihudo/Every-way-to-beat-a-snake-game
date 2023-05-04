@@ -32,7 +32,7 @@ class Snake:
             point = self.positions[0]
             
         for position in self.positions[1:]:
-            if point[0] == position:
+            if point == position:
                 return True
         return False
 
