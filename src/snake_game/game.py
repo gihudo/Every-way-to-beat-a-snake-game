@@ -1,7 +1,9 @@
-from snake_game.snake import Snake
-from snake_game.fruit import Fruit
+import sys
+sys.path.append('D:\GitHub\Snake-pygame\src\snake_game')
 
-import pygame, sys
+import snake, fruit
+
+import pygame
 from pygame.locals import *
 
 class Game:
@@ -20,13 +22,13 @@ class Game:
         pygame.display.set_caption(f"Snake: {self.score}")
         self.__load_resources()
 
-        self.fruit = Fruit(
+        self.fruit = fruit.Fruit(
             sprite_size = block_size,
             field = self.field,
             img = self.fruit_sprite
             )
 
-        self.snake = Snake(
+        self.snake = snake.Snake(
             sprite_size = self.block_size, 
             field = self.field,
             img = self.snake_body_sprite
@@ -35,8 +37,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("arial", 30)
 
-    def run(self):
-        while self.running:
+    def next(self):
+        if self.running:
             self.snake.move()
 
             self.__handle_keyboard_events()
@@ -65,6 +67,16 @@ class Game:
     def __game_win(self):
         pass
 
+    def reset(self):
+        self.running = True
+        self.score = 2
+
+        self.snake.length = 2
+        self.snake.positions = [(0, 0)] * 2
+
+        self.fruit.position = (self.field[0] - 1, self.field[1] - 1)
+
+
     def __handle_keyboard_events(self):
         for event in pygame.event.get():
                 if event.type == QUIT:
@@ -90,5 +102,5 @@ class Game:
         pygame.display.update()
     
     def __load_resources(self):
-        self.fruit_sprite = pygame.transform.scale(pygame.image.load("resources/fruit.png").convert_alpha(), (block_size, block_size))
-        self.snake_body_sprite = pygame.transform.scale(pygame.image.load("resources/snake_body.png").convert_alpha(), (block_size, block_size))
+        self.fruit_sprite = pygame.transform.scale(pygame.image.load("resources/fruit.png").convert_alpha(), (self.block_size, self.block_size))
+        self.snake_body_sprite = pygame.transform.scale(pygame.image.load("resources/snake_body.png").convert_alpha(), (self.block_size, self.block_size))

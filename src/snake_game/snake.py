@@ -27,9 +27,12 @@ class Snake:
     def is_collision(self, pos):
         return tuple(self.positions[0]) == pos
 
-    def is_body_collision(self):
+    def is_body_collision(self, point = None):
+        if point is None:
+            point = self.positions[0]
+            
         for position in self.positions[1:]:
-            if self.positions[0] == position:
+            if point[0] == position:
                 return True
         return False
 
