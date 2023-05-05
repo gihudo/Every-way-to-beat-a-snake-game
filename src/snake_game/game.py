@@ -16,6 +16,7 @@ class Game:
         self.running = True
         self.score = 2
         self.n_games = 0
+        self.steps = 0
         self.max_score = (field[0] - 1) * (field[1] - 1)
 
         pygame.init()
@@ -46,6 +47,7 @@ class Game:
             self.__handle_collisions()
             self.__update_screen()
 
+            self.steps += 1
             self.clock.tick(self.difficulty)
 
     def __handle_collisions(self):
@@ -72,6 +74,7 @@ class Game:
         self.running = True
         self.score = 2
         self.n_games += 1
+        self.steps = 0
         self.snake.length = 2
         self.snake.positions = [(0, 0)] * 2
 
@@ -93,9 +96,9 @@ class Game:
                     elif event.key == K_DOWN:
                         self.snake.change_direction_down()
                     elif event.key == K_1:
-                        self.difficulty -= 10
+                        self.difficulty -= 5
                     elif event.key == K_2:
-                        self.difficulty += 10
+                        self.difficulty += 5
 
 
     def __update_screen(self):

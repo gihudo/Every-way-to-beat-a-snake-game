@@ -30,7 +30,7 @@ class Snake:
     def is_body_collision(self, point = None):
         if point is None:
             point = self.positions[0]
-            
+        
         for position in self.positions[1:]:
             if point == position:
                 return True
