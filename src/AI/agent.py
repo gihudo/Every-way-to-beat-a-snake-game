@@ -1,5 +1,6 @@
 import sys
 sys.path.append('D:\GitHub\Snake-pygame\src\snake_game')
+sys.path.append('D:\GitHub\Snake-pygame\src\AI')
 
 import game, snake
 from model import Linear_QNet, QTrainer
@@ -91,9 +92,9 @@ class Agent:
 
     def get_action(self, state):
         final_move = [0, 0, 0, 0]
-        #self.epsilon = 100 - self.n_games
+        #self.epsilon = 1500 - self.n_games
         print(self.n_games)
-        if random.randint(0, 200) < self.epsilon:
+        if random.randint(0, 5000) < self.epsilon:
             print('random')
             move = random.randint(0, 3)
             final_move[move] = 1
@@ -105,40 +106,52 @@ class Agent:
 
         return final_move
 
-    def train():
+    def play(self, game):
+        final_move = self.get_action(self.get_state(game))
+
+        if final_move == [1,0,0,0]:
+            game.snake.change_direction_up()
+        elif final_move == [0,1,0,0]:
+            game.snake.change_direction_down()
+        elif final_move == [0,0,1,0]:
+            game.snake.change_direction_right()
+        elif final_move == [0,0,0,1]:
+            game.snake.change_direction_left()
+
+
+    def train(game):
         agent = Agent()
-        g = game.Game(difficulty = 1)
 
         record = 0
         count = 0
         while True:
-            state_old = agent.get_state(g)
+            state_old = agent.get_state(game)
             final_move = agent.get_action(state_old)
 
             if final_move == [1,0,0,0]:
-                g.snake.change_direction_up()
+                game.snake.change_direction_up()
             elif final_move == [0,1,0,0]:
-                g.snake.change_direction_down()
+                game.snake.change_direction_down()
             elif final_move == [0,0,1,0]:
-                g.snake.change_direction_right()
+                game.snake.change_direction_right()
             elif final_move == [0,0,0,1]:
-                g.snake.change_direction_left()
+                game.snake.change_direction_left()
 
-            old_score = g.score
-            g.next()
+            old_score = game.score
+            game.next()
 
-            state_new = agent.get_state(g)      
-            if g.running:
-                reward = 15 if old_score < g.score else 0
+            state_new = agent.get_state(game)      
+            if game.running:
+                reward = 15 if old_score < game.score else 0
             else: reward = -15
 
-            score = g.score
-            done = not g.running
+            score = game.score
+            done = not game.running
             print(state_new)
             agent.train_short_memory(state_old, final_move, reward, state_new, done)
             agent.remember(state_old, final_move, reward, state_new, done)
             if done:
-                g.reset()
+                game.reset()
                 agent.train_long_memory()
 
             if score > record:
@@ -146,4 +159,4 @@ class Agent:
                 record = score
 
 if __name__ == '__main__':
-    Agent.train()
+    Agent.train(game.Game(field = (55, 55), block_size= 15, difficulty = 1))
